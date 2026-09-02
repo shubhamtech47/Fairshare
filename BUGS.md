@@ -83,3 +83,13 @@ Keep this file in the repo and **commit it** with your fixes.
 **What is wrong:** `ExpenseList` passed the filtered/sorted array index to `onDeleteAt` and `onUpdateAt`. The reducer in `src/state/store.js` modified `state.expenses[action.index]`, which targeted the wrong expense in the full array. Also, using array index as React key caused input state desynchronization.
 
 **What I changed:** Updated `DELETE_EXPENSE` and `UPDATE_EXPENSE` in `src/state/store.js` to target items by `id`, updated `ExpenseList.jsx` to key rows by `expense.id` and pass `expense.id` to handlers, and synchronized the draft state in `ExpenseRow`.
+
+---
+
+## Bug 9
+
+**How to reproduce:** Enter a new name in the "Add member" form in Summary cards and submit.
+
+**What is wrong:** The new member was added to the group state, but did not appear in the "Paid so far" breakdown until a new expense was added. `perPerson` in `src/components/SummaryCards.jsx` omitted `members` from its `useMemo` dependency array.
+
+**What I changed:** Added `members` to the dependency array `[members, expenses]` in `src/components/SummaryCards.jsx`.
