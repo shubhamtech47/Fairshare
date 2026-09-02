@@ -23,7 +23,7 @@ export function suggestSettlements(balances, members) {
     const c = creditors[j];
     const settleAmt = Math.min(d.amount, c.amount);
 
-    if (settleAmt > 0.005 && d.amount !== c.amount) {
+    if (settleAmt > 0.005) {
       transfers.push({
         from: d.id,
         to: c.id,

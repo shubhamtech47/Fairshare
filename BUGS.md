@@ -33,3 +33,13 @@ Keep this file in the repo and **commit it** with your fixes.
 **What is wrong:** In `src/lib/balances.js`, lines 16–19 checked if `exp.paidBy` was not in `shares` and subtracted `amount / n` from the payer's balance. According to the specification, someone paying for others without participating in the split is owed the full amount back.
 
 **What I changed:** Removed lines 16–19 from `src/lib/balances.js` so that a payer who is not included in the split is credited the full payment amount without an artificial deduction.
+
+---
+
+## Bug 4
+
+**How to reproduce:** Create balances where a debtor's total debt equals a creditor's total credit (e.g. `d.amount === c.amount`).
+
+**What is wrong:** In `src/lib/settle.js`, the `else` branch of `suggestSettlements` incremented both pointers `i += 1; j += 1;` without adding the transfer to the `transfers` array, omitting the settlement transaction completely.
+
+**What I changed:** Refactored `suggestSettlements` in `src/lib/settle.js` using `Math.min(d.amount, c.amount)` to record the exact transfer and advance both pointers when debts and credits match, preventing dropped settlements and floating-point drift.
