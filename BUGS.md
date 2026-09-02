@@ -93,3 +93,13 @@ Keep this file in the repo and **commit it** with your fixes.
 **What is wrong:** The new member was added to the group state, but did not appear in the "Paid so far" breakdown until a new expense was added. `perPerson` in `src/components/SummaryCards.jsx` omitted `members` from its `useMemo` dependency array.
 
 **What I changed:** Added `members` to the dependency array `[members, expenses]` in `src/components/SummaryCards.jsx`.
+
+---
+
+## Bug 10
+
+**How to reproduce:** Enter a description and amount in the "Add expense" form and click "Save expense".
+
+**What is wrong:** The expense was created, but the description and amount inputs were not cleared, requiring manual clearing before adding the next expense.
+
+**What I changed:** Added resets for `description`, `amount`, and `error` in `src/components/AddExpenseForm.jsx` upon successful form submission.
