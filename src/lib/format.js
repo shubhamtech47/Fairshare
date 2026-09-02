@@ -11,8 +11,9 @@ export function formatDate(date) {
 }
 
 export function dateValue(date) {
-  if (date instanceof Date) {
-    return date;
+  if (date instanceof Date && !Number.isNaN(date.getTime())) {
+    return date.getTime();
   }
-  return date;
+  const t = new Date(date).getTime();
+  return Number.isNaN(t) ? 0 : t;
 }
