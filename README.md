@@ -28,7 +28,6 @@ The demo group is a weekend in Goa with a handful of bills already logged. Use t
 
 ## Run it
 
-
 You need Node.js 18 or newer.
 
 ```bash
@@ -64,4 +63,3 @@ All 10 identified issues from the specification have been fixed, verified, and r
 8. **Action Target by ID**: Updated expense update and delete actions to target items by unique ID instead of array index.
 9. **Summary Card Dependency**: Added `members` to `useMemo` dependency array for per-person summary calculations.
 10. **Add Expense Form Resets**: Added input resets for description, amount, and error state upon form submission.
-
