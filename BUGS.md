@@ -73,3 +73,13 @@ Keep this file in the repo and **commit it** with your fixes.
 **What is wrong:** In `src/state/store.js`, `loadState` returned `JSON.parse(raw)` directly without running `hydrate()`. As a result, `expense.date` was deserialized as a string rather than a `Date` instance, breaking date formatting and sorting.
 
 **What I changed:** Wrapped `JSON.parse(raw)` with `hydrate(...)` in `loadState` in `src/state/store.js`, and made `formatDate` in `src/lib/format.js` resilient to both `Date` objects and date strings.
+
+---
+
+## Bug 8
+
+**How to reproduce:** Filter or sort expenses, then click "Delete" or edit the amount input on any expense.
+
+**What is wrong:** `ExpenseList` passed the filtered/sorted array index to `onDeleteAt` and `onUpdateAt`. The reducer in `src/state/store.js` modified `state.expenses[action.index]`, which targeted the wrong expense in the full array. Also, using array index as React key caused input state desynchronization.
+
+**What I changed:** Updated `DELETE_EXPENSE` and `UPDATE_EXPENSE` in `src/state/store.js` to target items by `id`, updated `ExpenseList.jsx` to key rows by `expense.id` and pass `expense.id` to handlers, and synchronized the draft state in `ExpenseRow`.

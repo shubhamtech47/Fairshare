@@ -83,14 +83,14 @@ export default function ExpenseList({
       ) : (
         sorted.map((expense, index) => (
           <ExpenseRow
-            key={index}
+            key={expense.id}
             expense={expense}
             memberMap={memberMap}
-            onDelete={() => onDeleteAt ? onDeleteAt(index) : onDelete?.(expense.id)}
+            onDelete={() => (onDelete ? onDelete(expense.id) : onDeleteAt?.(index))}
             onSaveAmount={(amount) =>
-              onUpdateAt
-                ? onUpdateAt(index, { amount })
-                : onUpdate?.(expense.id, { amount })
+              onUpdate
+                ? onUpdate(expense.id, { amount })
+                : onUpdateAt?.(index, { amount })
             }
           />
         ))
