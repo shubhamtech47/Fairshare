@@ -63,3 +63,13 @@ Keep this file in the repo and **commit it** with your fixes.
 **What is wrong:** `splitEqual` divided `amount / n` and rounded each share independently to 2 decimal places ($33.33 each, summing to $99.99, losing 1 cent). Additionally, `percentsSumTo100` used strict equality `=== 100` on floating-point sums which fails on precision issues (e.g., `33.33 + 33.33 + 33.34 = 100.00000000000001 !== 100`).
 
 **What I changed:** Updated `splitEqual` and `splitByPercent` in `src/lib/money.js` to allocate exact cents so that the sum of shares always equals the total expense amount. Updated `percentsSumTo100` to allow floating-point tolerance (`Math.abs(sum - 100) < 0.01`).
+
+---
+
+## Bug 7
+
+**How to reproduce:** Reload the page after expenses are stored in `localStorage`.
+
+**What is wrong:** In `src/state/store.js`, `loadState` returned `JSON.parse(raw)` directly without running `hydrate()`. As a result, `expense.date` was deserialized as a string rather than a `Date` instance, breaking date formatting and sorting.
+
+**What I changed:** Wrapped `JSON.parse(raw)` with `hydrate(...)` in `loadState` in `src/state/store.js`, and made `formatDate` in `src/lib/format.js` resilient to both `Date` objects and date strings.
