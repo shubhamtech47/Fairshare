@@ -23,3 +23,13 @@ Keep this file in the repo and **commit it** with your fixes.
 **What is wrong:** The positive/negative conditions and styling in `src/components/BalancesPanel.jsx` were inverted. Members with a positive balance (creditors who paid more than their share) were displayed as "owes" with red text, and members with a negative balance (debtors who owe money) were displayed as "is owed" with green text.
 
 **What I changed:** Swapped the conditions in `src/components/BalancesPanel.jsx` so that `bal > 0.005` displays `is owed ${formatMoney(bal)}` with the `owed` class (green), and `bal < -0.005` displays `owes ${formatMoney(-bal)}` with the `owe` class (red).
+
+---
+
+## Bug 3
+
+**How to reproduce:** Check the running balance for Diya Patel regarding expense `e2` (Uber to airport: $60 paid by Diya, split only between Aisha and Ben). Diya's balance was computed as +$30 instead of +$60.
+
+**What is wrong:** In `src/lib/balances.js`, lines 16–19 checked if `exp.paidBy` was not in `shares` and subtracted `amount / n` from the payer's balance. According to the specification, someone paying for others without participating in the split is owed the full amount back.
+
+**What I changed:** Removed lines 16–19 from `src/lib/balances.js` so that a payer who is not included in the split is credited the full payment amount without an artificial deduction.

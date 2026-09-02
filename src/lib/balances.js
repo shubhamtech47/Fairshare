@@ -13,9 +13,6 @@ export function computeBalances(members, expenses) {
       bal[key] = (bal[key] || 0) - share;
     }
 
-    if (!exp.splitWith.includes(exp.paidBy)) {
-      bal[exp.paidBy] -= exp.amount / Object.keys(shares).length;
-    }
   }
 
   return bal;
