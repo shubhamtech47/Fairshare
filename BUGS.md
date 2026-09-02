@@ -53,3 +53,13 @@ Keep this file in the repo and **commit it** with your fixes.
 **What is wrong:** The expense list becomes empty even though Aisha has paid expenses. In `src/App.jsx`, `filtered` checked `if (paidBy !== "" && e.paidBy !== paidBy)`, comparing a number (`e.paidBy`) against a string (`paidBy`), which is always `true`.
 
 **What I changed:** Updated the filter in `src/App.jsx` to compare string values using `String(e.paidBy) !== String(paidBy)`.
+
+---
+
+## Bug 6
+
+**How to reproduce:** Add an expense of $100 split equally among 3 people, or $20 split with custom percentages (33.33%, 33.33%, 33.34%).
+
+**What is wrong:** `splitEqual` divided `amount / n` and rounded each share independently to 2 decimal places ($33.33 each, summing to $99.99, losing 1 cent). Additionally, `percentsSumTo100` used strict equality `=== 100` on floating-point sums which fails on precision issues (e.g., `33.33 + 33.33 + 33.34 = 100.00000000000001 !== 100`).
+
+**What I changed:** Updated `splitEqual` and `splitByPercent` in `src/lib/money.js` to allocate exact cents so that the sum of shares always equals the total expense amount. Updated `percentsSumTo100` to allow floating-point tolerance (`Math.abs(sum - 100) < 0.01`).

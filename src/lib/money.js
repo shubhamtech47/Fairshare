@@ -8,31 +8,53 @@ export function formatMoney(amount) {
 export function splitEqual(amount, ids) {
   if (!ids || ids.length === 0) return {};
   const n = ids.length;
-  const share = Number((amount / n).toFixed(2));
+  const totalCents = Math.round(Number(amount) * 100);
+  const baseCents = Math.floor(totalCents / n);
+  const remainder = totalCents - baseCents * n;
+
   const shares = {};
-  for (const id of ids) shares[id] = share;
+  for (let i = 0; i < ids.length; i++) {
+    const id = ids[i];
+    const centShare = baseCents + (i < remainder ? 1 : 0);
+    shares[id] = centShare / 100;
+  }
   return shares;
 }
 
-export function percentsSumTo100(percents) {
-  const values = Object.values(percents).map(Number);
-  if (values.length === 0 || values.some((v) => !Number.isFinite(v) || v <= 0)) {
+export function percentsSumTo100(percents, splitWith) {
+  const keys = splitWith ? splitWith.map(String) : Object.keys(percents);
+  if (keys.length === 0) return false;
+  const values = keys.map((k) => Number(percents[k]));
+  if (values.some((v) => !Number.isFinite(v) || v <= 0)) {
     return false;
   }
-  return values.reduce((a, b) => a + b, 0) === 100;
+  const sum = values.reduce((a, b) => a + b, 0);
+  return Math.abs(sum - 100) < 0.01;
 }
 
-export function splitByPercent(amount, percents) {
+export function splitByPercent(amount, percents, splitWith) {
+  const totalCents = Math.round(Number(amount) * 100);
+  const keys = splitWith ? splitWith.map(String) : Object.keys(percents);
+  const entries = keys.map((k) => [k, percents[k]]);
+  if (entries.length === 0) return {};
+
   const shares = {};
-  for (const [id, pct] of Object.entries(percents)) {
-    shares[id] = Number(((amount * Number(pct)) / 100).toFixed(2));
-  }
+  let allocatedCents = 0;
+  entries.forEach(([id, pct], index) => {
+    if (index === entries.length - 1) {
+      shares[id] = (totalCents - allocatedCents) / 100;
+    } else {
+      const shareCents = Math.round((totalCents * Number(pct)) / 100);
+      shares[id] = shareCents / 100;
+      allocatedCents += shareCents;
+    }
+  });
   return shares;
 }
 
 export function sharesForExpense(expense) {
   if (expense.splitType === "percent" && expense.percents) {
-    return splitByPercent(expense.amount, expense.percents);
+    return splitByPercent(expense.amount, expense.percents, expense.splitWith);
   }
   return splitEqual(expense.amount, expense.splitWith);
 }
