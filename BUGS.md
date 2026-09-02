@@ -43,3 +43,13 @@ Keep this file in the repo and **commit it** with your fixes.
 **What is wrong:** In `src/lib/settle.js`, the `else` branch of `suggestSettlements` incremented both pointers `i += 1; j += 1;` without adding the transfer to the `transfers` array, omitting the settlement transaction completely.
 
 **What I changed:** Refactored `suggestSettlements` in `src/lib/settle.js` using `Math.min(d.amount, c.amount)` to record the exact transfer and advance both pointers when debts and credits match, preventing dropped settlements and floating-point drift.
+
+---
+
+## Bug 5
+
+**How to reproduce:** Select any member in the "Paid by" dropdown in the Filter card (e.g., select "Aisha Khan").
+
+**What is wrong:** The expense list becomes empty even though Aisha has paid expenses. In `src/App.jsx`, `filtered` checked `if (paidBy !== "" && e.paidBy !== paidBy)`, comparing a number (`e.paidBy`) against a string (`paidBy`), which is always `true`.
+
+**What I changed:** Updated the filter in `src/App.jsx` to compare string values using `String(e.paidBy) !== String(paidBy)`.
